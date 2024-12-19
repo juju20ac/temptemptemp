@@ -1,6 +1,32 @@
+trigger:
+- main  # This pipeline triggers on the main branch. You can modify the branch as needed.
 
-V<V@mg=`7pcB
+jobs:
+- job: TriggerFirstPipeline
+  steps:
+  - task: AzurePipeline@1
+    inputs:
+      azureSubscription: '<ServiceConnection>'       # Replace with the correct service connection
+      project: '<TargetProject>'                      # Replace with the target project name
+      pipeline: '<FirstPipelineName>'                 # Replace with the first pipeline's name
+      triggerBranch: 'refs/heads/main'                # Optional: Specify the branch if needed
 
+- job: TriggerSecondPipeline
+  dependsOn: TriggerFirstPipeline                  # Ensures the second pipeline runs only after the first pipeline completes
+  steps:
+  - task: AzurePipeline@1
+    inputs:
+      azureSubscription: '<ServiceConnection>'      # Replace with the correct service connection
+      project: '<TargetProject>'                     # Replace with the target project name
+      pipeline: '<SecondPipelineName>'               # Replace with the second pipeline's name
+      triggerBranch: 'refs/heads/main'               # Optional: Specify the branch if needed
 
-AKIA27U3IKZADDB3DZPRB
-c9KsWkQZgjIzGl6Kw6qMYUxE9GOpXoeCW5EtnqmX
+- job: TriggerThirdPipeline
+  dependsOn: TriggerSecondPipeline                 # Ensures the third pipeline runs only after the second pipeline completes
+  steps:
+  - task: AzurePipeline@1
+    inputs:
+      azureSubscription: '<ServiceConnection>'      # Replace with the correct service connection
+      project: '<TargetProject>'                     # Replace with the target project name
+      pipeline: '<ThirdPipelineName>'                # Replace with the third pipeline's name
+      triggerBranch: 'refs/heads/main'
