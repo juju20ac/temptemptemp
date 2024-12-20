@@ -1,0 +1,18 @@
+# Replace with your values
+$organization = "your-organization-name"
+$project = "your-project-name"
+$personalAccessToken = "your-personal-access-token"  # Your PAT here
+
+# Encode PAT for authentication
+$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$personalAccessToken"))
+
+# Define the API endpoint (Example: List work items)
+$uri = "https://dev.azure.com/$organization/$project/_apis/wit/workitems?api-version=7.1-preview.1"
+
+# Make the API Call
+$response = Invoke-RestMethod -Uri $uri -Method Get -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+
+# Output the result
+$response.value | ForEach-Object {
+    Write-Host "ID: $($_.id) - Title: $($_.fields.'System.Title')"
+}
